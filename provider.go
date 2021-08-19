@@ -35,11 +35,14 @@ var (
 	FALSE = structpb.NewBoolValue(false)
 )
 
-//go:linkname NewIntValue github.com/ImSingee/strutpb.NewIntValue
+//go:linkname NewIntValue github.com/ImSingee/structpb.NewIntValue
 func NewIntValue(v int64) *Value
 
-//go:linkname NewEmptyMap github.com/ImSingee/strutpb.NewEmptyStruct
+//go:linkname NewEmptyMap github.com/ImSingee/structpb.NewEmptyStruct
 func NewEmptyMap() *Map
+
+//go:linkname NewMap github.com/ImSingee/structpb.NewStruct
+func NewMap(v map[string]interface{}) (*Map, error)
 
 // TypeName for Any or AnyValue
 func TypeName(v interface{}) string {

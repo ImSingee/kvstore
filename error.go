@@ -26,7 +26,7 @@ type ErrKeyTypeNotMatch struct {
 
 func (e ErrKeyTypeNotMatch) Error() string {
 	if e.On == "" || e.Key == e.On {
-		return fmt.Sprintf("key %s contains invalid type: expect %s, but got %s", e.Key, e.Expect, e.Got)
+		return fmt.Sprintf("key %s is invalid: type expected to be %s, but got %s", e.Key, e.Expect, e.Got)
 	} else {
 		return fmt.Sprintf("key %s is invalid: type of %s is %s, but it should be %s", e.Key, e.On, e.Got, e.Expect)
 	}

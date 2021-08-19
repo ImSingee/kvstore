@@ -1,10 +1,10 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/ImSingee/structpb v0.1.3 h1:stqjuRu8i1oZB82JObsw3FdkgYkK5i7iGzWWGni8hYI=
-github.com/ImSingee/structpb v0.1.3/go.mod h1:UeAIymm+ZLWtgDYNMeqNjipwSBS+nDKBQnW8Ho9meoA=
+github.com/ImSingee/structpb v0.1.4 h1:uXY7fR35d148qgOKqcz6XTj7GjcYWDSqfsgdcDbt+Fk=
+github.com/ImSingee/structpb v0.1.4/go.mod h1:UeAIymm+ZLWtgDYNMeqNjipwSBS+nDKBQnW8Ho9meoA=
+github.com/ImSingee/tt v1.0.2 h1:t6EWUfy6rB9fuBH3U4OaYcZ17hKa4TbYU211jCnD9fA=
+github.com/ImSingee/tt v1.0.2/go.mod h1:7O7v+cIBruYWGFObw85DDjH0gNLquen1cJqMR3GOgxw=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
-github.com/cheekybits/genny v1.0.0 h1:uGGa4nei+j20rOSeDeP5Of12XVm7TGUd4dJA9RDitfE=
-github.com/cheekybits/genny v1.0.0/go.mod h1:+tQajlRqAUrPI7DOSpB0XAqZYtQakVtB7wXkRAgjxjQ=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=

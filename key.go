@@ -32,7 +32,7 @@ func indexByKeyParts(parent Any, originalKey string, keyParts []string) (Any, er
 			}
 		case *List:
 			index, err := strconv.Atoi(k)
-			if err != nil {
+			if err != nil || index < 0 {
 				return nil, ErrKeyIndexNotValid{
 					Key:   originalKey,
 					On:    strings.Join(prefixParts, "."),
@@ -47,7 +47,7 @@ func indexByKeyParts(parent Any, originalKey string, keyParts []string) (Any, er
 					Max:   len(p.Values) - 1,
 				}
 			}
-			parent = p.Values[index]
+			parent = p.Values[index].Unwrap()
 		default:
 			return nil, ImpossibleError()
 		}

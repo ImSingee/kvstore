@@ -68,20 +68,25 @@ func (s *store) readValue(key string) (AnyValue, error) {
 	return AnyToValue(any), nil
 }
 
-// 返回 key 对应的值，但保证返回的值只可能是 Map 或 List
-func (s *store) valueForChange(key string) (Any, error) {
+// 返回 key 的上层所对应的值
+// 返回的第一个参数为 key 的最后一个部分
+// 返回的第二个参数为 key 的倒数第二个部分所对应的 Any 值，且其类型只可能为 *Map 或 *List
+// 返回的第三个参数为可能出现的错误
+func (s *store) valueForChange(key string) (string, Any, error) {
 	keyParts := strings.Split(key, ".")
+	last := len(keyParts) - 1
+	lastKey := keyParts[last]
 
-	any, err := indexByKeyParts(s.Provider, key, keyParts)
+	any, err := indexByKeyParts(s.Provider, key, keyParts[:last])
 	if err != nil {
-		return nil, err
+		return lastKey, nil, err
 	}
 
 	switch any.(type) {
 	case *Map, *List:
-		return any, nil
+		return lastKey, any, nil
 	default:
-		return nil, ErrKeyTypeNotMatch{
+		return lastKey, nil, ErrKeyTypeNotMatch{
 			Key:    key,
 			Expect: "map or list",
 			Got:    TypeName(any),

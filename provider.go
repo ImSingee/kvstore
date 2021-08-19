@@ -1,6 +1,9 @@
 package kvstore
 
-import "github.com/ImSingee/structpb"
+import (
+	"fmt"
+	"github.com/ImSingee/structpb"
+)
 
 import _ "unsafe"
 
@@ -21,7 +24,7 @@ type Provider = structpb.Struct
 type Any interface{}
 
 // AnyValue 标识着来源于 Value.AsInterface() 的可能返回值
-// 其类型可能为 nil, int64, float64, string, bool, map[string]interface(), []interface{}
+// 其类型可能为 nil, int64, float64, string, bool, map[string]interface{}, []interface{}
 type AnyValue interface{}
 
 type Value = structpb.Value
@@ -35,6 +38,9 @@ var (
 	FALSE = structpb.NewBoolValue(false)
 )
 
+//go:linkname NewValue github.com/ImSingee/structpb.NewValue
+func NewValue(v interface{}) (*Value, error)
+
 //go:linkname NewIntValue github.com/ImSingee/structpb.NewIntValue
 func NewIntValue(v int64) *Value
 
@@ -43,6 +49,12 @@ func NewEmptyMap() *Map
 
 //go:linkname NewMap github.com/ImSingee/structpb.NewStruct
 func NewMap(v map[string]interface{}) (*Map, error)
+
+//go:linkname NewList github.com/ImSingee/structpb.NewList
+func NewList(v []interface{}) (*List, error)
+
+//go:linkname NewEmptyList github.com/ImSingee/structpb.NewEmptyList
+func NewEmptyList() (*List, error)
 
 // TypeName for Any or AnyValue
 func TypeName(v interface{}) string {
@@ -80,4 +92,55 @@ func AnyToValue(from Any) AnyValue {
 	default:
 		return v
 	}
+}
+
+// ValueToAny convert AnyValue to Any, 转换为一一对应
+// 需要注意的是，AnyValue 为字符串形式的 float64 (NaN, Infinity) 则会出现不一致
+func ValueToAny(from AnyValue) (Any, error) {
+	switch v := from.(type) {
+	case nil, int64, float64, string, bool:
+		return v, nil
+	case map[string]interface{}:
+		return NewMap(v)
+	case []interface{}:
+		return NewList(v)
+	default:
+		return nil, fmt.Errorf("invalid type %T", from)
+	}
+}
+
+// AnyValueToValue convert AnyValue to *Value, 转换为一一对应
+// 相比于 NewValue 而言这一函数更加严格（同时效率也更高）
+func AnyValueToValue(from AnyValue) (*Value, error) {
+	switch v := from.(type) {
+	case nil:
+		return NULL, nil
+	case bool:
+		if v {
+			return TRUE, nil
+		} else {
+			return FALSE, nil
+		}
+	case string:
+		return structpb.NewStringValue(v), nil
+	case int64:
+		return structpb.NewIntValue(v), nil
+	case float64:
+		return structpb.NewFloatValue(v), nil
+	case map[string]interface{}:
+		s, err := structpb.NewStruct(v)
+		if err != nil {
+			return nil, err
+		}
+		return structpb.NewStructValue(s), nil
+	case []interface{}:
+		l, err := structpb.NewList(v)
+		if err != nil {
+			return nil, err
+		}
+		return structpb.NewListValue(l), nil
+	default:
+		return nil, fmt.Errorf("invalid type %T", from)
+	}
+
 }

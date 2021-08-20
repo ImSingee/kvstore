@@ -10,6 +10,9 @@ func (s *store) Clone() Store {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 
+	return s.clone()
+}
+func (s *store) clone() Store {
 	return &store{Provider: proto.Clone(s.Provider).(*Map)}
 }
 

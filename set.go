@@ -5,15 +5,92 @@ import (
 	"strconv"
 )
 
-func (s *store) setValue(key string, newValue_ AnyValue) error {
-	last, parent, err := s.valueForChange(key)
-	if err != nil {
-		return err
-	}
+type Setter interface {
+	SetNull(key string) error
+	SetInt64(key string, value int64) error
+	SetUint64(key string, value uint64) error
+	SetFloat64(key string, value float64) error
+	SetBool(key string, value bool) error
+	SetTrue(key string) error
+	SetFalse(key string) error
+	SetList(key string, value []interface{}) error
+	SetMap(key string, value map[string]interface{}) error
 
+	SetAnyList(key string, value interface{}) error
+	SetStringList(key string, value []string) error
+	SetAnyMap(key string, value interface{}) error
+}
+
+var _ Store = (*store)(nil)
+
+func (s *store) SetNull(key string) error {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	return s.setValueByAnyValue(key, nil)
+}
+
+func (s *store) SetInt64(key string, value int64) error {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	return s.setValueByAnyValue(key, int64(value))
+}
+
+// SetUint64 可能将结果使用 int64 或 float64 存储
+func (s *store) SetUint64(key string, value uint64) error {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	if value > math.MaxInt64 {
+		return s.setValueByAnyValue(key, float64(value))
+	} else {
+		return s.setValueByAnyValue(key, int64(value))
+	}
+}
+
+func (s *store) SetFloat64(key string, value float64) error {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	return s.setValueByAnyValue(key, float64(value))
+}
+
+func (s *store) SetBool(key string, value bool) error {
+	if value {
+		return s.SetTrue(key)
+	} else {
+		return s.SetFalse(key)
+	}
+}
+
+func (s *store) SetTrue(key string) error {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	return s.setValueByAnyValue(key, true)
+}
+
+func (s *store) SetFalse(key string) error {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	return s.setValueByAnyValue(key, false)
+}
+
+func (s *store) setValueByAnyValue(key string, newValue_ AnyValue) error {
 	newValue, err := AnyValueToValue(newValue_)
 	if err != nil {
 		return err // 应当在外部提前保证好不可能出现
+	}
+
+	return s.setValueByValue(key, newValue)
+}
+
+func (s *store) setValueByValue(key string, newValue *Value) error {
+	last, parent, err := s.valueForChange(key)
+	if err != nil {
+		return err
 	}
 
 	switch p := parent.(type) {
@@ -45,59 +122,4 @@ func (s *store) setValue(key string, newValue_ AnyValue) error {
 	default:
 		return ImpossibleError()
 	}
-}
-
-func (s *store) SetNull(key string) error {
-	s.lock.Lock()
-	defer s.lock.Unlock()
-
-	return s.setValue(key, nil)
-}
-
-func (s *store) SetInt64(key string, value int64) error {
-	s.lock.Lock()
-	defer s.lock.Unlock()
-
-	return s.setValue(key, int64(value))
-}
-
-// SetUint64 可能将结果使用 int64 或 float64 存储
-func (s *store) SetUint64(key string, value uint64) error {
-	s.lock.Lock()
-	defer s.lock.Unlock()
-
-	if value > math.MaxInt64 {
-		return s.setValue(key, float64(value))
-	} else {
-		return s.setValue(key, int64(value))
-	}
-}
-
-func (s *store) SetFloat64(key string, value float64) error {
-	s.lock.Lock()
-	defer s.lock.Unlock()
-
-	return s.setValue(key, float64(value))
-}
-
-func (s *store) SetBool(key string, value bool) error {
-	if value {
-		return s.SetTrue(key)
-	} else {
-		return s.SetFalse(key)
-	}
-}
-
-func (s *store) SetTrue(key string) error {
-	s.lock.Lock()
-	defer s.lock.Unlock()
-
-	return s.setValue(key, true)
-}
-
-func (s *store) SetFalse(key string) error {
-	s.lock.Lock()
-	defer s.lock.Unlock()
-
-	return s.setValue(key, false)
 }

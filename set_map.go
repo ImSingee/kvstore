@@ -6,7 +6,7 @@ func (s *store) SetMap(key string, value map[string]interface{}) error {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
-	return s.setValue(key, map[string]interface{}(value))
+	return s.setValueByAnyValue(key, map[string]interface{}(value))
 }
 
 // SetAnyMap
@@ -22,5 +22,5 @@ func (s *store) SetAnyMap(key string, value interface{}) error {
 		m[key.String()] = rv.MapIndex(key).Interface()
 	}
 
-	return s.setValue(key, map[string]interface{}(m))
+	return s.setValueByAnyValue(key, map[string]interface{}(m))
 }

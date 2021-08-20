@@ -6,7 +6,7 @@ func (s *store) SetList(key string, value []interface{}) error {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
-	return s.setValue(key, []interface{}(value))
+	return s.setValueByAnyValue(key, []interface{}(value))
 }
 
 func (s *store) SetStringList(key string, value []string) error {
@@ -18,7 +18,7 @@ func (s *store) SetStringList(key string, value []string) error {
 		list[i] = e
 	}
 
-	return s.setValue(key, []interface{}(list))
+	return s.setValueByAnyValue(key, []interface{}(list))
 }
 
 // SetAnyList
@@ -34,5 +34,5 @@ func (s *store) SetAnyList(key string, value interface{}) error {
 		list[i] = rv.Index(i).Interface()
 	}
 
-	return s.setValue(key, []interface{}(list))
+	return s.setValueByAnyValue(key, []interface{}(list))
 }

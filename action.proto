@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package singee.kvstore;
+
+import "struct/struct.proto";
+
+option go_package = "github.com/ImSingee/kvstore";
+
+message Action {
+  oneof action {
+    Set set = 1;
+    Delete delete = 2;
+    Replace replace = 3;
+  }
+}
+
+// 设置一个值
+message Set {
+  string key = 1;
+  struct.Value value = 2;
+}
+
+// 删除一个值
+message Delete {
+  string key = 1;
+}
+
+// 完全替换底层数据
+message Replace {
+  struct.Struct new = 1;
+}

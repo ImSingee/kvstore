@@ -1,5 +1,17 @@
 package kvstore
 
+type Getter interface {
+	Get(key string) (AnyValue, error)
+	GetInt(key string) (int64, error)
+	GetFloat(key string) (float64, error)
+	GetBool(key string) (bool, error)
+	GetString(key string) (string, error)
+	GetMap(key string) (map[string]interface{}, error)
+	GetList(key string) ([]interface{}, error)
+}
+
+var _ Getter = (*store)(nil)
+
 func (s *store) Get(key string) (AnyValue, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()

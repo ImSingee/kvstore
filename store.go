@@ -7,6 +7,7 @@ import (
 type Store interface {
 	Getter
 	Setter
+	Checker
 	Deleter
 	Applier
 	Cloner

@@ -1,5 +1,12 @@
 package kvstore
 
+type Checker interface {
+	CheckExist(key string) error
+	CheckType(key string, typeName string) error
+}
+
+var _ Checker = (*store)(nil)
+
 // CheckExist 检查 key 是否存在，如果不存在或有中间错误会返回 error
 func (s *store) CheckExist(key string) error {
 	s.lock.RLock()

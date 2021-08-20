@@ -77,11 +77,54 @@ func Filter(dataset map[string]interface{}, shouldRemain func(k string, v interf
 	return newSet
 }
 
-// FilterSubSet
+// ExportFlatAndFilter
 // 将 dataset 中所有不在 includes 或 includes 子元素中的元素筛选掉
-func FilterSubSet(dataset map[string]interface{}, includes []string) map[string]interface{} {
+func (s *store) ExportFlatAndFilter(includes []string) map[string]interface{} {
 	trie := NewTrie(includes)
-	return Filter(dataset, func(k string, _ interface{}) bool {
+	return Filter(s.Export(), func(k string, _ interface{}) bool {
 		return trie.CheckExist(k)
 	})
+}
+
+func (s *store) ExportAndFilter(includes []string) map[string]interface{} {
+	return FilterByIncludes(s.Export(), includes)
+}
+
+// FilterByIncludes
+// 将 dataset 中所有不在 includes 或 includes 子元素中的元素筛选掉
+// dataset 是一个多层数据集合，通常来源于 Export （不能来源于 ExportFlat，因为该函数没有展开逻辑）
+// includes 是一个 key 列表，key 允许存在层级关系，但不允许访问数组子元素
+// 该函数会修改 dataset
+// 如果 includes 为空或 nil 该函数会返回一个空 map
+func FilterByIncludes(dataset map[string]interface{}, includes []string) map[string]interface{} {
+	result := filterDeepMap("", dataset, NewTrie(includes))
+	if result != nil {
+		return result
+	} else {
+		return map[string]interface{}{}
+	}
+}
+
+func filterDeepMap(prefix string, dataset map[string]interface{}, tree *TrieTree) map[string]interface{} {
+	for key, value := range dataset {
+		switch v := value.(type) {
+		case nil, int64, float64, string, bool, []interface{}:
+			if !tree.CheckExist(prefix + key) {
+				delete(dataset, key)
+			}
+		case map[string]interface{}:
+			newValue := filterDeepMap(prefix+key+".", v, tree)
+			if newValue == nil {
+				delete(dataset, key)
+			} else {
+				dataset[key] = newValue
+			}
+		}
+	}
+
+	if len(dataset) == 0 {
+		return nil
+	}
+
+	return dataset
 }

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package singee.kvstore;
 
-import "struct/struct.proto";
+import "github.com/ImSingee/structpb/struct.proto";
 
 option go_package = "github.com/ImSingee/kvstore";
 

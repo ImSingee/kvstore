@@ -1,8 +1,13 @@
 package kvstore
 
 import (
+	"errors"
 	"fmt"
 )
+
+func IsNotExist(err error) bool {
+	return errors.Is(err, ErrKeyNotExist{})
+}
 
 type ErrKeyNotExist struct {
 	Key string
@@ -15,6 +20,10 @@ func (e ErrKeyNotExist) Error() string {
 	} else {
 		return fmt.Sprintf("key %s not exist: miss %s", e.Key, e.On)
 	}
+}
+
+func IsKeyTypeNotMatch(err error) bool {
+	return errors.Is(err, ErrKeyTypeNotMatch{})
 }
 
 type ErrKeyTypeNotMatch struct {
@@ -30,6 +39,10 @@ func (e ErrKeyTypeNotMatch) Error() string {
 	} else {
 		return fmt.Sprintf("key %s is invalid: type of %s is %s, but it should be %s", e.Key, e.On, e.Got, e.Expect)
 	}
+}
+
+func IsKeyIndexNotValid(err error) bool {
+	return errors.Is(err, ErrKeyIndexNotValid{})
 }
 
 type ErrKeyIndexNotValid struct {

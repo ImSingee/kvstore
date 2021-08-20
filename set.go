@@ -11,6 +11,7 @@ type Setter interface {
 	SetUint64(key string, value uint64) error
 	SetFloat64(key string, value float64) error
 	SetBool(key string, value bool) error
+	SetString(key string, value string) error
 	SetTrue(key string) error
 	SetFalse(key string) error
 	SetList(key string, value []interface{}) error
@@ -64,6 +65,13 @@ func (s *store) SetBool(key string, value bool) error {
 	}
 }
 
+func (s *store) SetString(key string, value string) error {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	return s.setValueByAnyValue(key, string(value))
+}
+
 func (s *store) SetTrue(key string) error {
 	s.lock.Lock()
 	defer s.lock.Unlock()
@@ -88,7 +96,7 @@ func (s *store) setValueByAnyValue(key string, newValue_ AnyValue) error {
 }
 
 func (s *store) setValueByValue(key string, newValue *Value) error {
-	last, parent, err := s.valueForChange(key)
+	last, parent, err := s.valueForChange(key, true)
 	if err != nil {
 		return err
 	}

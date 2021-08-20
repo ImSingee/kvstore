@@ -47,6 +47,10 @@ func NewIntValue(v int64) *Value
 //go:linkname NewEmptyMap github.com/ImSingee/structpb.NewEmptyStruct
 func NewEmptyMap() *Map
 
+func NewEmptyMapValue() *Value {
+	return structpb.NewStructValue(NewEmptyMap())
+}
+
 //go:linkname NewMap github.com/ImSingee/structpb.NewStruct
 func NewMap(v map[string]interface{}) (*Map, error)
 

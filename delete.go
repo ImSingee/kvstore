@@ -25,14 +25,14 @@ func (s *store) Delete(key string) error {
 	return s.delete(key, true)
 }
 func (s *store) delete(key string, allowNotExist bool) error {
-	last, parent, err := s.valueForChange(key)
+	last, parent, err := s.valueForChange(key, false)
 	if err != nil {
 		return err
 	}
 
 	switch p := parent.(type) {
 	case *Map:
-		_, ok := p.Fields[key]
+		_, ok := p.Fields[last]
 		if ok {
 			delete(p.Fields, last)
 		} else if !allowNotExist {

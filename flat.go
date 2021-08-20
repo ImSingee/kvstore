@@ -5,6 +5,13 @@ import (
 	"strings"
 )
 
+type KeySplitter interface {
+	FlatForHighLevel(key string) []string
+	FlatForLowLevel(key string) []string
+}
+
+var _ KeySplitter = (*store)(nil)
+
 // FlatForHighLevel 返回 key 的所有上层 key
 // 该函数不会检查返回值是否在 store 中为合法的 key，但这一约束未来可能会添加
 // 如果打算手动 opt-out 这一约束请使用独立的 FlatForHighLevel 函数（而非当前方法）

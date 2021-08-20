@@ -181,13 +181,13 @@ var testData = `{
     }
 }`
 
-func newStore() *store {
+func newStore() Store {
 	s, err := LoadFromJSON([]byte(testData))
 	if err != nil {
 		panic(err)
 	}
 
-	return s.(*store)
+	return s
 }
 
 func TestStore_GetInt(t *testing.T) {

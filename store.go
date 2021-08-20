@@ -9,6 +9,9 @@ type Store interface {
 	Setter
 	Deleter
 	Applier
+	Cloner
+	Exporter
+	KeySplitter
 
 	UnsafeUnderlying() *Map
 	UnsafeUnderlyingPointer() **Map

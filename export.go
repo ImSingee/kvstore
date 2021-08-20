@@ -5,6 +5,21 @@ import (
 	"strconv"
 )
 
+type Cloner interface {
+	Clone() Store
+}
+
+type Exporter interface {
+	Export() map[string]interface{}
+	ExportFlat() map[string]interface{}
+
+	ExportAndFilter(includes []string) map[string]interface{}
+	ExportFlatAndFilter(includes []string) map[string]interface{}
+}
+
+var _ Cloner = (*store)(nil)
+var _ Exporter = (*store)(nil)
+
 // Clone 会克隆一个新的 Store 对象，其数据与原始相同但修改互不影响
 func (s *store) Clone() Store {
 	s.lock.RLock()

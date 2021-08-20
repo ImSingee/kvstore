@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func indexByKeyParts(parent Any, originalKey string, keyParts []string) (Any, error) {
+func indexByKeyParts(parent Any, originalKey string, keyParts []string, createMapKeyIfPossible bool) (Any, error) {
 	prefixParts := keyParts[:0]
 
 	for len(keyParts) > 0 {
@@ -27,6 +27,11 @@ func indexByKeyParts(parent Any, originalKey string, keyParts []string) (Any, er
 			parent = p
 		case *Map:
 			parent = p.Get(k).Unwrap() // (new parent <-> value from struct)
+			if parent == nil && createMapKeyIfPossible {
+				// parent 不存在 k 对应的值，创建
+				p.Set(k, NewEmptyMapValue())
+				parent = p.Get(k).Unwrap()
+			}
 			if parent == nil {
 				return nil, ErrKeyNotExist{Key: originalKey, On: strings.Join(prefixParts, ".")}
 			}
@@ -60,7 +65,7 @@ func indexByKeyParts(parent Any, originalKey string, keyParts []string) (Any, er
 func (s *store) readValue(key string) (AnyValue, error) {
 	keyParts := strings.Split(key, ".")
 
-	any, err := indexByKeyParts(s.Provider, key, keyParts)
+	any, err := indexByKeyParts(s.Provider, key, keyParts, false)
 	if err != nil {
 		return nil, err
 	}
@@ -72,12 +77,12 @@ func (s *store) readValue(key string) (AnyValue, error) {
 // 返回的第一个参数为 key 的最后一个部分
 // 返回的第二个参数为 key 的倒数第二个部分所对应的 Any 值，且其类型只可能为 *Map 或 *List
 // 返回的第三个参数为可能出现的错误
-func (s *store) valueForChange(key string) (string, Any, error) {
+func (s *store) valueForChange(key string, createMapKeyIfPossible bool) (string, Any, error) {
 	keyParts := strings.Split(key, ".")
 	last := len(keyParts) - 1
 	lastKey := keyParts[last]
 
-	any, err := indexByKeyParts(s.Provider, key, keyParts[:last])
+	any, err := indexByKeyParts(s.Provider, key, keyParts[:last], createMapKeyIfPossible)
 	if err != nil {
 		return lastKey, nil, err
 	}

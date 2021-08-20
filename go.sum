@@ -1,5 +1,7 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/ImSingee/sio v0.3.2 h1:/zT2405ChTOD+RhSowORklIKCnYCrppid460uGMbyhY=
+github.com/ImSingee/sio v0.3.2/go.mod h1:vtEviXt9k8Rhjn7w5O3sp9Xo2Lp1CBFXQjog2TnhSz4=
 github.com/ImSingee/structpb v0.1.5 h1:o6p44b0wKZJ637cS+6iqC8M87aVD+4hnFIOR5aZpfzM=
 github.com/ImSingee/structpb v0.1.5/go.mod h1:UeAIymm+ZLWtgDYNMeqNjipwSBS+nDKBQnW8Ho9meoA=
 github.com/ImSingee/tt v1.0.2 h1:t6EWUfy6rB9fuBH3U4OaYcZ17hKa4TbYU211jCnD9fA=

@@ -5,6 +5,7 @@ import "fmt"
 type Applier interface {
 	ReplaceInner(new *Map)
 	Apply(actions []*Action) error
+	ApplyAction(action *Action) error
 	MockApply(actions []*Action) (Store, error)
 
 	ApplyByJSON(data []byte) error
@@ -33,6 +34,12 @@ func (s *store) Apply(actions []*Action) error {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
+	return s.apply(actions)
+}
+func (s *store) UnsafeApply(actions []*Action) error {
+	return s.apply(actions)
+}
+func (s *store) apply(actions []*Action) error {
 	newStore := s.clone().(*store)
 	err := applyOn(newStore, actions)
 	if err != nil {
@@ -40,6 +47,17 @@ func (s *store) Apply(actions []*Action) error {
 	}
 	s.replaceInner(newStore.Provider)
 	return nil
+}
+
+func (s *store) ApplyAction(action *Action) error {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	return applyOn(s, []*Action{action})
+}
+
+func (s *store) UnsafeApplyAction(action *Action) error {
+	return applyOn(s, []*Action{action})
 }
 
 // MockApply 会返回基于 store 虚拟执行一系列 action 的结果

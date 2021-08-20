@@ -22,7 +22,12 @@ type Setter interface {
 	SetAnyMap(key string, value interface{}) error
 }
 
-var _ Store = (*store)(nil)
+type UnsafeSetter interface {
+	UnsafeSetValueByValue(key string, newValue *Value) error
+}
+
+var _ Setter = (*store)(nil)
+var _ UnsafeSetter = (*store)(nil)
 
 func (s *store) SetNull(key string) error {
 	s.lock.Lock()
@@ -95,6 +100,9 @@ func (s *store) setValueByAnyValue(key string, newValue_ AnyValue) error {
 	return s.setValueByValue(key, newValue)
 }
 
+func (s *store) UnsafeSetValueByValue(key string, newValue *Value) error {
+	return s.setValueByValue(key, newValue)
+}
 func (s *store) setValueByValue(key string, newValue *Value) error {
 	last, parent, err := s.valueForChange(key, true)
 	if err != nil {

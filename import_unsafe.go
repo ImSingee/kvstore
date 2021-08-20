@@ -12,6 +12,9 @@ type UnsafeApplier interface {
 	UnsafeLocker
 	Applier
 
+	UnsafeApply(actions []*Action) error
+	UnsafeApplyAction(action *Action) error
+
 	UnsafeMockApplyAndLock(actions []*Action) (Store, error)
 	UnsafeReplaceInnerWithoutLock(new *Map)
 }

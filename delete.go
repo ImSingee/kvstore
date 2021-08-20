@@ -8,7 +8,12 @@ type Deleter interface {
 	Delete(key string) error
 }
 
+type UnsafeDeleter interface {
+	UnsafeDelete(key string) error
+}
+
 var _ Deleter = (*store)(nil)
+var _ UnsafeDeleter = (*store)(nil)
 
 // Delete 用于删除一个 key
 // 如果 key 不存在，返回 nil
@@ -22,6 +27,9 @@ func (s *store) Delete(key string) error {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
+	return s.delete(key, true)
+}
+func (s *store) UnsafeDelete(key string) error {
 	return s.delete(key, true)
 }
 func (s *store) delete(key string, allowNotExist bool) error {

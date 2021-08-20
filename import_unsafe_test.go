@@ -7,7 +7,7 @@ import (
 
 func newActions() []*Action {
 	return []*Action{
-		{Action: &Action_Set{Set: &Set{Key: "a", Value: NewIntValue(10)}}},
+		NewSetAction("a", NewIntValue(10)),
 	}
 }
 

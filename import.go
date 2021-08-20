@@ -6,6 +6,8 @@ type Applier interface {
 	ReplaceInner(new *Map)
 	Apply(actions []*Action) error
 	MockApply(actions []*Action) (Store, error)
+
+	ApplyByJSON(data []byte) error
 }
 
 // ReplaceInner 替换内部的数据

@@ -103,7 +103,7 @@ func (s *store) setValueByValue(key string, newValue *Value) error {
 
 	switch p := parent.(type) {
 	case *Map:
-		p.Fields[last] = newValue
+		p.Set(last, newValue)
 		return nil
 	case *List:
 		if last == "+" {

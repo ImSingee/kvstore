@@ -24,3 +24,21 @@ func (x *Action) IsDelete() bool {
 func (x *Action) IsReplace() bool {
 	return x.GetReplace() != nil
 }
+
+func NewSetAction(key string, value *Value) *Action {
+	return &Action{
+		Action: &Action_Set{Set: &Set{Key: key, Value: value}},
+	}
+}
+
+func NewDeleteAction(key string) *Action {
+	return &Action{
+		Action: &Action_Delete{Delete: &Delete{Key: key}},
+	}
+}
+
+func NewReplaceAction(new *Map) *Action {
+	return &Action{
+		Action: &Action_Replace{Replace: &Replace{New: new}},
+	}
+}

@@ -10,6 +10,7 @@ type Store interface {
 	Deleter
 	Applier
 	Cloner
+	Dumper
 	Exporter
 	KeySplitter
 

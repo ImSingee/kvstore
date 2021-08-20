@@ -5,6 +5,71 @@ import (
 	"testing"
 )
 
+func newComplicateStore() Store {
+	data, err := newStore().GetMap("complicate")
+	if err != nil {
+		panic(err)
+	}
+	s, err := CreateStore(data)
+	if err != nil {
+		panic(err)
+	}
+
+	return s
+}
+
+func TestExport(t *testing.T) {
+	store := newComplicateStore()
+
+	cmp := map[string]interface{}{
+		"name":    "Hannah Mack",
+		"gender":  "female",
+		"company": "VERTON",
+		"tags": []interface{}{
+			"duis",
+			"irure",
+			"non",
+			map[string]interface{}{
+				"id":   int64(0),
+				"name": "Naomi Burris",
+			},
+			map[string]interface{}{
+				"isActive": false,
+				"balance":  "$2,422.40",
+				"oops": []interface{}{
+					"duis",
+					"irure",
+				},
+			},
+			"id",
+		},
+	}
+
+	tt.AssertEqual(t, cmp, store.Export())
+}
+
+func TestExportFlat(t *testing.T) {
+	store := newComplicateStore()
+
+	cmp := map[string]interface{}{
+		"name":            "Hannah Mack",
+		"gender":          "female",
+		"company":         "VERTON",
+		"tags.0":          "duis",
+		"tags.1":          "irure",
+		"tags.2":          "non",
+		"tags.3.id":       int64(0),
+		"tags.3.name":     "Naomi Burris",
+		"tags.4.isActive": false,
+		"tags.4.balance":  "$2,422.40",
+		"tags.4.oops.0":   "duis",
+		"tags.4.oops.1":   "irure",
+		"tags.5":          "id",
+	}
+
+	tt.AssertEqual(t, cmp, store.ExportFlat())
+}
+
 func TestFilterDeep(t *testing.T) {
 	s := newStore()
 

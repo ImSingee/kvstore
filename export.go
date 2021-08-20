@@ -45,8 +45,11 @@ func (s *store) Export() map[string]interface{} {
 // 返回的 value 类型只可能为基本类型（nil, int64, float64, string, bool）
 func (s *store) ExportFlat() map[string]interface{} {
 	// 该函数不上锁，唯一读在 Export 内上锁
-	data := s.Export()
+	return toFlat(s.Export())
+}
 
+// toFlat 将 data 拍平展开至只有基础类型，操作为直接修改 data
+func toFlat(data map[string]interface{}) map[string]interface{} {
 	for {
 		toDelete := make([]string, 0, 64)
 

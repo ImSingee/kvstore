@@ -57,6 +57,8 @@ func NewList(v []interface{}) (*List, error)
 func NewEmptyList() (*List, error)
 
 // TypeName for Any or AnyValue
+// 返回值可能为 "null", "int", "float", "string", "bool", "map", "list"
+// 对于非 Any 和 AnyValue 的类型均返回 "unknown"
 func TypeName(v interface{}) string {
 	switch v.(type) {
 	// nil, int64, float64, string, bool, *Struct, *List

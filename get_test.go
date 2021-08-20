@@ -142,6 +142,42 @@ var testData = `{
             "greeting":"Hello, Kelly Mcguire! You have 9 unread messages.",
             "favoriteFruit":"banana"
         }
+    },
+    "simple":{
+        "eyeColor":"blue",
+        "name":"Aida Sanchez",
+        "gender":"female",
+        "company":"PORTALIS",
+        "email":"aidasanchez@portalis.com",
+        "phone":"+1 (819) 424-2032",
+        "address":"885 Merit Court, Marbury, District Of Columbia, 9139",
+        "about":"Aliqua consectetur incididunt minim Lorem cupidatat velit eiusmod do. Do tempor culpa veniam amet elit ipsum adipisicing nostrud eiusmod excepteur consequat. Magna cupidatat ipsum culpa consectetur ex deserunt incididunt sit cupidatat velit sint incididunt ad. Incididunt labore laborum laborum sint dolor est adipisicing est laboris eiusmod culpa. Aliqua nostrud ipsum ea officia esse qui. Lorem do laborum exercitation enim mollit elit proident nisi irure. Elit esse quis laborum consectetur non nulla in.\r\n",
+        "registered":"2021-05-19T12:58:47 -08:00",
+        "latitude":-37.629836,
+        "longitude":-59.529829
+    },
+    "complicate":{
+        "name":"Hannah Mack",
+        "gender":"female",
+        "company":"VERTON",
+        "tags":[
+            "duis",
+            "irure",
+            "non",
+            {
+                "id":0,
+                "name":"Naomi Burris"
+            },
+            {
+                "isActive":false,
+                "balance":"$2,422.40",
+                "oops":[
+                    "duis",
+                    "irure"
+                ]
+            },
+            "id"
+        ]
     }
 }`
 

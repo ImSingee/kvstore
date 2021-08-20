@@ -61,12 +61,6 @@ func (s *store) ExportFlat() map[string]interface{} {
 	return data
 }
 
-//// ExportAllLevel 获得所有可以利用 Get 获得的 k-v 集合
-//// 例如对于 a.b.c.d ，其会同时返回 a, a.b, a.b.c, a.b.c.d 的内容
-//func (s *store) ExportAllLevel() map[string]interface{} {
-//
-//}
-
 func Filter(dataset map[string]interface{}, shouldRemain func(k string, v interface{}) bool) map[string]interface{} {
 	newSet := make(map[string]interface{}, len(dataset))
 	for k, v := range dataset {

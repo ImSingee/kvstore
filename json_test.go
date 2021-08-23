@@ -17,7 +17,7 @@ func TestStore_ApplyByJSON_stable(t *testing.T) {
 
 	tt.AssertEqual(t, base.Export(), cmp.Export())
 	tt.AssertEqual(t, base.ExportFlat(), cmp.ExportFlat())
-	tt.AssertTrue(t, proto.Equal(base.UnsafeUnderlying(), cmp.UnsafeUnderlying()))
+	tt.AssertTrue(t, proto.Equal(base.Unsafe().UnsafeUnderlying(), cmp.Unsafe().UnsafeUnderlying()))
 }
 
 func TestStore_ApplyByJSON(t *testing.T) {

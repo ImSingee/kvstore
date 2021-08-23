@@ -5,6 +5,8 @@ import "github.com/ImSingee/kvstore"
 type UnsafeManager interface {
 	UnsafeLock()
 	UnsafeUnlock()
+
+	UnsafeStore() kvstore.Store
 }
 
 func (m *manager) Unsafe() UnsafeManager {
@@ -27,4 +29,8 @@ func (m *manager) UnsafeUnlock() {
 
 func (m *manager) unlock() {
 	m.Store.(kvstore.UnsafeStore).UnsafeUnlock()
+}
+
+func (m *manager) UnsafeStore() kvstore.Store {
+	return m.Store
 }

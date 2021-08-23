@@ -43,7 +43,7 @@ func ExampleUnsafeApplier_UnsafeMockApplyAndLock() {
 	}
 	// ReplaceInner 会上锁，但锁已经在上面的 UnsafeMockApplyAndLock 持有，因此
 	// 这里使用不安全的无锁版本 UnsafeReplaceInnerWithoutLock
-	s.UnsafeReplaceInnerWithoutLock(newStore.UnsafeUnderlying())
+	s.UnsafeReplaceInnerWithoutLock(newStore.Unsafe().UnsafeUnderlying())
 	// 并且需要手动解锁
 	s.UnsafeUnlock()
 
@@ -134,7 +134,7 @@ func ExampleUnsafeApplier_UnsafeMockApplyAndLock_concurrent_edit() {
 	if v, _ := newStore.GetInt("a"); v != 10 {
 		panic(fmt.Sprintf("v = %d != %d", v, 10))
 	}
-	s.ReplaceInner(newStore.UnsafeUnderlying())
+	s.ReplaceInner(newStore.Unsafe().UnsafeUnderlying())
 
 	// 这时，因为 goroutine1 应当是「一组操作的集合」，因此它应当是一同执行的
 	// goroutine2 对 a 的并发修改发生在 goroutine1 以后

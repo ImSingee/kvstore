@@ -16,9 +16,6 @@ type Store interface {
 	KeySplitter
 
 	Unsafe() UnsafeStore
-
-	UnsafeUnderlying() *Map
-	UnsafeUnderlyingPointer() **Map
 }
 
 type UnsafeStore interface {
@@ -28,6 +25,9 @@ type UnsafeStore interface {
 	UnsafeSetter
 	UnsafeDeleter
 	UnsafeApplier
+
+	UnsafeUnderlying() *Map
+	UnsafeUnderlyingPointer() **Map
 }
 
 type store struct {

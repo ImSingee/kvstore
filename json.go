@@ -7,7 +7,7 @@ func JSONToActions(data []byte) ([]*Action, error) {
 	if err != nil {
 		return nil, err
 	}
-	u := store.UnsafeUnderlying().Fields
+	u := store.Unsafe().UnsafeUnderlying().Fields
 	actions := make([]*Action, 0, len(u))
 
 	for k, v := range u {

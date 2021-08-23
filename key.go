@@ -90,6 +90,7 @@ func (s *store) valueForChange(key string, createMapKeyIfPossible bool) (string,
 	default:
 		return lastKey, nil, ErrKeyTypeNotMatch{
 			Key:    key,
+			On:     strings.Join(keyParts[:last], "."),
 			Expect: "map or list",
 			Got:    TypeName(any),
 		}

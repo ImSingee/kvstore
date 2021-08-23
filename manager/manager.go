@@ -38,6 +38,7 @@ type Manager interface {
 	Dump() error
 
 	Unsafe() UnsafeManager
+	IsReadonly() bool
 }
 
 var _ Manager = (*manager)(nil)
@@ -47,10 +48,19 @@ type manager struct {
 
 	db     string
 	dbFile *os.File
+
+	ro bool
 }
 
-// NewManager 创建一个新的 Manager 对象，传入的 File 应当是支持 R/W/A 的
+// NewManager 创建一个新的 Manager 对象
 func NewManager(dbFilename string) (Manager, error) {
+	return newManager(dbFilename, false)
+}
+func NewReadonlyManager(dbFilename string) (Manager, error) {
+	return newManager(dbFilename, true)
+}
+
+func newManager(dbFilename string, readonly bool) (Manager, error) {
 	store := kvstore.NewStore()
 
 	if dbFile, err := os.OpenFile(dbFilename, os.O_RDONLY, 0644); err == nil {
@@ -94,14 +104,19 @@ func NewManager(dbFilename string) (Manager, error) {
 		return nil, ErrDBFileBroken{Filename: dbFilename, OpenError: err}
 	}
 
-	appendFile, err := os.OpenFile(dbFilename, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
-	if err != nil {
-		return nil, ErrDBFileCannot{"open for append", err}
+	var appendFile *os.File
+	var err error
+	if !readonly {
+		appendFile, err = os.OpenFile(dbFilename, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
+		if err != nil {
+			return nil, ErrDBFileCannot{"open for append", err}
+		}
 	}
 
 	return &manager{
 		Store:  store,
 		db:     dbFilename,
 		dbFile: appendFile,
+		ro:     readonly,
 	}, nil
 }

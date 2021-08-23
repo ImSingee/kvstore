@@ -11,6 +11,9 @@ import (
 // Dump 将当前数据全量存储至 DB 文件
 // 如果出现极端异常可能会直接 panic
 func (m *manager) Dump() error {
+	if m.ro {
+		return fmt.Errorf("readonly")
+	}
 	m.lock()
 	defer m.unlock()
 

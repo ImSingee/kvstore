@@ -2,6 +2,7 @@ package manager
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/ImSingee/kvstore"
 	"github.com/ImSingee/sio"
 	"github.com/golang/protobuf/proto"
@@ -10,6 +11,10 @@ import (
 
 // 内部会上锁，f 中只能使用无锁函数
 func (m *manager) writeLogsAndDoE(actions []*kvstore.Action, f func(s kvstore.UnsafeStore) error) error {
+	if m.ro {
+		return fmt.Errorf("readonly")
+	}
+
 	m.lock()
 	defer m.unlock()
 

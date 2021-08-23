@@ -41,6 +41,9 @@ func (s *store) checkType(key string, typeName string) error {
 	if expectName == typeName {
 		return nil
 	}
+	if typeName == "any" || typeName == "" {
+		return nil
+	}
 
 	switch expectName {
 	case "int", "float":

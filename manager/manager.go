@@ -18,6 +18,8 @@ type Manager interface {
 	kvstore.Exporter
 	kvstore.KeySplitter
 
+	Close()
+
 	Set(key string, value *kvstore.Value) error
 	SetNull(key string) error
 	SetInt64(key string, value int64) error

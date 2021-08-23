@@ -70,7 +70,7 @@ func TestExportFlat(t *testing.T) {
 	tt.AssertEqual(t, cmp, store.ExportFlat())
 }
 
-func TestFilterDeep(t *testing.T) {
+func TestExportAndFilter(t *testing.T) {
 	s := newStore()
 
 	t.Run("nil-filter", func(t *testing.T) {

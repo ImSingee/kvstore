@@ -14,7 +14,6 @@ type Manager interface {
 	kvstore.Getter
 	kvstore.Checker
 	kvstore.Cloner
-	kvstore.Dumper
 	kvstore.Exporter
 	kvstore.KeySplitter
 
@@ -36,6 +35,8 @@ type Manager interface {
 
 	ApplyByJSON(data []byte) error
 
+	Dump() error
+
 	Unsafe() UnsafeManager
 }
 
@@ -44,32 +45,19 @@ var _ Manager = (*manager)(nil)
 type manager struct {
 	kvstore.Store
 
-	full   string
-	append string
-
-	appendFile *os.File
+	db     string
+	dbFile *os.File
 }
 
 // NewManager 创建一个新的 Manager 对象，传入的 File 应当是支持 R/W/A 的
-func NewManager(full, append string) (Manager, error) {
+func NewManager(dbFilename string) (Manager, error) {
 	var store kvstore.Store
 
-	if fullFile, err := os.ReadFile(full); err == nil {
-		store, err = kvstore.Load(fullFile)
-		if err != nil {
-			return nil, ErrFullFileBroken{Filename: full, Reason: err}
-		}
-	} else if os.IsNotExist(err) {
-		store = kvstore.NewStore()
-	} else {
-		return nil, ErrFullFileBroken{Filename: full, Reason: err}
-	}
-
-	if appendFile, err := os.OpenFile(append, os.O_RDONLY, 0644); err == nil {
-		r := sio.NewReader(appendFile)
+	if dbFile, err := os.OpenFile(dbFilename, os.O_RDONLY, 0644); err == nil {
+		r := sio.NewReader(dbFile)
 
 		err := func() error {
-			defer appendFile.Close()
+			defer dbFile.Close()
 
 			for {
 				size, err := r.ReadVarUInt()
@@ -77,24 +65,24 @@ func NewManager(full, append string) (Manager, error) {
 					if err == io.EOF {
 						return nil
 					}
-					return ErrAppendFileBroken{Filename: append, DecodeError: err}
+					return ErrDBFileBroken{Filename: dbFilename, DecodeError: err}
 				}
 				if size > math.MaxInt32 {
-					return ErrAppendFileBroken{Filename: append, DecodeError: fmt.Errorf("uvarint %d overflow", size)}
+					return ErrDBFileBroken{Filename: dbFilename, DecodeError: fmt.Errorf("uvarint %d overflow", size)}
 				}
 				result, err := r.ReadEnoughBytes(int(size))
 				if err != nil {
-					return ErrAppendFileBroken{Filename: append, DecodeError: err}
+					return ErrDBFileBroken{Filename: dbFilename, DecodeError: err}
 				}
 				var action kvstore.Action
 				err = proto.Unmarshal(result, &action)
 				if err != nil {
-					return ErrAppendFileBroken{Filename: append, DecodeError: err}
+					return ErrDBFileBroken{Filename: dbFilename, DecodeError: err}
 				}
 
 				err = store.Unsafe().UnsafeApplyAction(&action)
 				if err != nil {
-					return ErrAppendFileBroken{Filename: append, DecodeError: err}
+					return ErrDBFileBroken{Filename: dbFilename, DecodeError: err}
 				}
 			}
 		}()
@@ -103,18 +91,17 @@ func NewManager(full, append string) (Manager, error) {
 			return nil, err
 		}
 	} else if !os.IsNotExist(err) {
-		return nil, ErrAppendFileBroken{Filename: append, OpenError: err}
+		return nil, ErrDBFileBroken{Filename: dbFilename, OpenError: err}
 	}
 
-	appendFile, err := os.OpenFile(append, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
+	appendFile, err := os.OpenFile(dbFilename, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 	if err != nil {
-		return nil, ErrAppendFileCannot{"open for append", err}
+		return nil, ErrDBFileCannot{"open for append", err}
 	}
 
 	return &manager{
-		Store:      store,
-		full:       full,
-		append:     append,
-		appendFile: appendFile,
+		Store:  store,
+		db:     dbFilename,
+		dbFile: appendFile,
 	}, nil
 }

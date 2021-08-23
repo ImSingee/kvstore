@@ -37,9 +37,9 @@ func (m *manager) writeLogsAndDoE(actions []*kvstore.Action, f func(s kvstore.Un
 		return err
 	}
 
-	_, err = io.Copy(m.appendFile, &buf)
+	_, err = io.Copy(m.dbFile, &buf)
 	if err != nil {
-		panic("kvstore manager: cannot write append: " + err.Error())
+		panic("kvstore manager: cannot write db: " + err.Error())
 	}
 
 	return nil

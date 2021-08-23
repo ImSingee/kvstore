@@ -11,7 +11,6 @@ func indexByKeyParts(parent Any, originalKey string, keyParts []string, createMa
 	for len(keyParts) > 0 {
 		k := keyParts[0]
 		keyParts = keyParts[1:]
-		prefixParts = prefixParts[:len(prefixParts)+1]
 
 		switch p := parent.(type) {
 		case nil, int64, float64, string, bool:
@@ -52,6 +51,8 @@ func indexByKeyParts(parent Any, originalKey string, keyParts []string, createMa
 		default:
 			return nil, ImpossibleError()
 		}
+
+		prefixParts = prefixParts[:len(prefixParts)+1]
 	}
 
 	return parent, nil

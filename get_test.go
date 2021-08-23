@@ -282,4 +282,5 @@ func TestGetSomething(t *testing.T) {
 
 	_, err = store.Get("test.a.xx")
 	tt.AssertIsNotNil(t, err)
+	fmt.Println(err)
 }

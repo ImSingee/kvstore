@@ -51,7 +51,7 @@ type manager struct {
 
 // NewManager 创建一个新的 Manager 对象，传入的 File 应当是支持 R/W/A 的
 func NewManager(dbFilename string) (Manager, error) {
-	var store kvstore.Store
+	store := kvstore.NewStore()
 
 	if dbFile, err := os.OpenFile(dbFilename, os.O_RDONLY, 0644); err == nil {
 		r := sio.NewReader(dbFile)

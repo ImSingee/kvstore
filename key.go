@@ -15,16 +15,12 @@ func indexByKeyParts(parent Any, originalKey string, keyParts []string, createMa
 
 		switch p := parent.(type) {
 		case nil, int64, float64, string, bool:
-			if len(keyParts) != 0 { // not last part, disallow basic types
-				return nil, ErrKeyTypeNotMatch{
-					Key:    originalKey,
-					On:     strings.Join(prefixParts, "."),
-					Expect: "map or list",
-					Got:    TypeName(p),
-				}
+			return nil, ErrKeyTypeNotMatch{
+				Key:    originalKey,
+				On:     strings.Join(prefixParts, "."),
+				Expect: "map or list",
+				Got:    TypeName(p),
 			}
-
-			parent = p
 		case *Map:
 			parent = p.Get(k).Unwrap() // (new parent <-> value from struct)
 			if parent == nil && createMapKeyIfPossible {

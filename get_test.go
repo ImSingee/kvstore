@@ -237,6 +237,11 @@ func TestStore_GetInt(t *testing.T) {
 			in:        "greeting.something",
 			willError: true,
 		},
+		{
+			name:      `attr-access-on-basic`,
+			in:        "simple.gender.something",
+			willError: true,
+		},
 	}
 
 	store := newStore()
@@ -255,4 +260,26 @@ func TestStore_GetInt(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestGetSomething(t *testing.T) {
+	store, err := LoadFromJSON([]byte(`{
+    "test": {
+        "a": "asfdassdafsd",
+        "loong_count": 4,
+        "sleep_time": "30s",
+        "sleep_times": [
+            "10s",
+            "20s",
+            "30s",
+            "40s",
+            "50s",
+            "60s"
+        ]
+    }
+}`))
+	tt.AssertIsNil(t, err)
+
+	_, err = store.Get("test.a.xx")
+	tt.AssertIsNotNil(t, err)
 }

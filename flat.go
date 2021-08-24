@@ -87,6 +87,8 @@ func flatForLowLevelList(keys []string, prefix string, data []interface{}) []str
 	return keys
 }
 
+// FlatForHighLevel 返回所有的上层 key，并保证按长度由小到大排序
+// 例如对于 a.b.c 会返回 [a, a.b, a.b.c]
 func FlatForHighLevel(key string) []string {
 	if key == "" {
 		return nil

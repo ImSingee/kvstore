@@ -65,3 +65,16 @@ func (s *store) checkType(key string, typeName string) error {
 		Got:    expectName,
 	}
 }
+
+// TypeNameEqual 检查两个类型名称是否相同（准确来说是是否可以用后者覆盖前者）
+// 当完全相同或现类型是前类型的子集时返回 true，否则返回 false
+func TypeNameEqual(previous, current string) bool {
+	if previous == current {
+		return true
+	}
+	if previous == "number" {
+		return current == "int" || current == "float"
+	}
+
+	return false
+}

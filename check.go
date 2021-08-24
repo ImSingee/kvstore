@@ -66,15 +66,26 @@ func (s *store) checkType(key string, typeName string) error {
 	}
 }
 
-// TypeNameEqual 检查两个类型名称是否相同（准确来说是是否可以用后者覆盖前者）
-// 当完全相同或现类型是前类型的子集时返回 true，否则返回 false
-func TypeNameEqual(previous, current string) bool {
+// TypeNameCompare 检查两个类型的包含关系
+// 0 代表相同，-1 代表前者范围更小，1 代表后者返回更小
+// -2 代表检查不通过（二者无交集）
+func TypeNameCompare(previous, current string) int {
 	if previous == current {
-		return true
+		return 0
 	}
-	if previous == "number" {
-		return current == "int" || current == "float"
+	if previous == "any" { // previous > current
+		return 1
+	}
+	if current == "any" { // current > previous
+		return -1
 	}
 
-	return false
+	if previous == "number" && (current == "int" || current == "float") { // previous > current
+		return 1
+	}
+	if current == "number" && (previous == "int" || previous == "float") { // current > previous
+		return -1
+	}
+
+	return -2 // 无关
 }

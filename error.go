@@ -6,7 +6,7 @@ import (
 )
 
 func IsNotExist(err error) bool {
-	return errors.Is(err, ErrKeyNotExist{})
+	return errors.As(err, &ErrKeyNotExist{})
 }
 
 type ErrKeyNotExist struct {
@@ -23,7 +23,7 @@ func (e ErrKeyNotExist) Error() string {
 }
 
 func IsKeyTypeNotMatch(err error) bool {
-	return errors.Is(err, ErrKeyTypeNotMatch{})
+	return errors.As(err, &ErrKeyTypeNotMatch{})
 }
 
 type ErrKeyTypeNotMatch struct {
@@ -42,7 +42,7 @@ func (e ErrKeyTypeNotMatch) Error() string {
 }
 
 func IsKeyIndexNotValid(err error) bool {
-	return errors.Is(err, ErrKeyIndexNotValid{})
+	return errors.As(err, &ErrKeyIndexNotValid{})
 }
 
 type ErrKeyIndexNotValid struct {

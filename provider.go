@@ -7,7 +7,7 @@ import (
 
 import _ "unsafe"
 
-type Provider = structpb.Struct
+type Provider = structpb.Dict
 
 /*
 //	*Value_NullValue
@@ -29,8 +29,8 @@ type AnyValue interface{}
 
 type Value = structpb.Value
 
-type Map = structpb.Struct
-type List = structpb.ListValue
+type Map = structpb.Dict
+type List = structpb.List
 
 var (
 	NULL  = structpb.NewNullValue()
@@ -44,14 +44,14 @@ func NewValue(v interface{}) (*Value, error)
 //go:linkname NewIntValue github.com/ImSingee/structpb.NewIntValue
 func NewIntValue(v int64) *Value
 
-//go:linkname NewEmptyMap github.com/ImSingee/structpb.NewEmptyStruct
+//go:linkname NewEmptyMap github.com/ImSingee/structpb.NewEmptyDict
 func NewEmptyMap() *Map
 
 func NewEmptyMapValue() *Value {
 	return structpb.NewStructValue(NewEmptyMap())
 }
 
-//go:linkname NewMap github.com/ImSingee/structpb.NewStruct
+//go:linkname NewMap github.com/ImSingee/structpb.NewDict
 func NewMap(v map[string]interface{}) (*Map, error)
 
 //go:linkname NewList github.com/ImSingee/structpb.NewList
@@ -134,7 +134,7 @@ func AnyValueToValue(from AnyValue) (*Value, error) {
 	case float64:
 		return structpb.NewFloatValue(v), nil
 	case map[string]interface{}:
-		s, err := structpb.NewStruct(v)
+		s, err := structpb.NewDict(v)
 		if err != nil {
 			return nil, err
 		}

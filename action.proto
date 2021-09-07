@@ -27,5 +27,5 @@ message Delete {
 
 // 完全替换底层数据
 message Replace {
-  struct.Struct new = 1;
+  struct.Dict new = 1;
 }

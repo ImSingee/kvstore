@@ -42,3 +42,9 @@ func NewReplaceAction(new *Map) *Action {
 		Action: &Action_Replace{Replace: &Replace{New: new}},
 	}
 }
+
+func NewClearAction() *Action {
+	return &Action{
+		Action: &Action_Replace{Replace: &Replace{New: NewEmptyMap()}},
+	}
+}

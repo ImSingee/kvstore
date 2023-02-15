@@ -32,6 +32,7 @@ type Manager interface {
 	SetMap(key string, value map[string]interface{}) error
 
 	Delete(key string) error
+	Clear() error
 
 	ApplyByJSON(data []byte) error
 

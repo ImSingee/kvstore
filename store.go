@@ -9,6 +9,7 @@ type Store interface {
 	Setter
 	Checker
 	Deleter
+	Clearer
 	Applier
 	Cloner
 	Dumper
@@ -24,6 +25,7 @@ type UnsafeStore interface {
 	UnsafeGetter
 	UnsafeSetter
 	UnsafeDeleter
+	UnsafeClearer
 	UnsafeApplier
 
 	UnsafeUnderlying() *Map
